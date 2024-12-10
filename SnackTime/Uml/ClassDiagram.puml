@@ -1,0 +1,57 @@
+@startuml
+hide circle
+hide empty members
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+title Class-diagram SnackTime
+
+
+class User {
+    uint Identifier
+    string UserName
+    string PasswordHash
+    List<Order> Orders
+}
+
+class Product {
+    uint Identifier
+    string Name
+    decimal Price
+    string ImagePath
+    Discount? Discount
+}
+
+class ProductCount {
+    Product Product
+    uint Count
+    
+    GetTotalPrice()
+}
+
+class Order {
+    uint Identifier
+    List<ProductCount> Products
+    enum Status
+    User Owner
+    DateTime OrderTime
+    
+    GetTotalPrice()
+}
+
+class Discount {
+    uint Identifier
+    Product Product
+    decimal DiscountPercentage
+    DateTime StartTime
+    DateTime EndTime
+    string? DiscountCode
+}
+
+User "1" -- "0:n" Order
+Order "1" -- "0:n" ProductCount
+ProductCount "0:n" -- "1" Product
+Discount "0:1" -- "1" Product
+
+
+
+@enduml
