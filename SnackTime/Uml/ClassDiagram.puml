@@ -11,6 +11,7 @@ class User {
     string UserName
     string PasswordHash
     List<Order> Orders
+    Basket Basket
 }
 
 class Product {
@@ -28,11 +29,14 @@ class ProductCount {
     GetTotalPrice()
 }
 
+class Basket {
+    User Owner
+    List<ProductCount> Products
+}
+
 class Order {
     uint Identifier
-    List<ProductCount> Products
     enum Status
-    User Owner
     DateTime OrderTime
     
     GetTotalPrice()
@@ -51,6 +55,9 @@ User "1" -- "0:n" Order
 Order "1" -- "0:n" ProductCount
 ProductCount "0:n" -- "1" Product
 Discount "0:1" -- "1" Product
+User "1" -- "1" Basket
+
+Order --> Basket
 
 
 
