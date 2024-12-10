@@ -32,14 +32,14 @@ class ProductCount {
 class Basket {
     User Owner
     List<ProductCount> Products
+    
+    GetTotalPrice()
 }
 
 class Order {
     uint Identifier
     enum Status
     DateTime OrderTime
-    
-    GetTotalPrice()
 }
 
 class Discount {
