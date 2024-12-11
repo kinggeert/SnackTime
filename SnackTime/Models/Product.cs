@@ -7,4 +7,5 @@ public class Product
     public decimal Price { get; set; }
     public string ImagePath { get; set; }
     public Discount? Discount { get; set; }
+    public List<Addon> AvailableAddons { get; set; }
 }
