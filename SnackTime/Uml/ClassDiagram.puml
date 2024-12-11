@@ -10,6 +10,8 @@ class User {
     uint Identifier
     string UserName
     string PasswordHash
+    string Email
+    string PhoneNumber
     List<Order> Orders
     Basket Basket
 }
@@ -20,11 +22,13 @@ class Product {
     decimal Price
     string ImagePath
     Discount? Discount
+    List<Addon> AvailableAddons
 }
 
 class ProductCount {
     Product Product
     uint Count
+    List<Addon> AddonsUsed
     
     GetTotalPrice()
 }
@@ -51,11 +55,21 @@ class Discount {
     string? DiscountCode
 }
 
+class Addon {
+    uint Identifier
+    string Name
+    decimal Price
+    List<Product> ApplicableProducts
+    List<Addon> UnavailableWith
+}
+
 User "1" -- "0:n" Order
 Order "1" -- "0:n" ProductCount
 ProductCount "0:n" -- "1" Product
 Discount "0:1" -- "1" Product
 User "1" -- "1" Basket
+Addon "0:n" -- "0:n" Product
+Addon "0:n" -- "0:n" ProductCount
 
 Order --> Basket
 
