@@ -6,4 +6,5 @@ public class User
     public string Name { get; set; }
     public string PasswordHash { get; set; }
     public List<Order> Orders { get; set; }
+    public Role Role { get; set; }
 }
