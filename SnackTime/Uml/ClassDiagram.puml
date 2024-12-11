@@ -7,60 +7,65 @@ title Class-diagram SnackTime
 
 
 class User {
-    uint Identifier
-    string UserName
-    string PasswordHash
-    string Email
-    string PhoneNumber
-    List<Order> Orders
-    Basket Basket
+    +uint Identifier
+    +string UserName
+    +string PasswordHash
+    +string Email
+    +string PhoneNumber
+    +Role Role
+    +List<Order> Orders
+    +Basket Basket
+}
+
+class Role {
+    +string Name
 }
 
 class Product {
-    uint Identifier
-    string Name
-    decimal Price
-    string ImagePath
-    Discount? Discount
-    List<Addon> AvailableAddons
+    +uint Identifier
+    +string Name
+    +decimal Price
+    +string ImagePath
+    +Discount? Discount
+    +List<Addon> AvailableAddons
 }
 
 class ProductCount {
-    Product Product
-    uint Count
-    List<Addon> AddonsUsed
+    +Product Product
+    +uint Count
+    +List<Addon> AddonsUsed
     
-    GetTotalPrice()
+    +GetTotalPrice()
 }
 
 class Basket {
-    User Owner
-    List<ProductCount> Products
+    +User Owner
+    +List<ProductCount> Products
     
-    GetTotalPrice()
+    +GetTotalPrice()
 }
 
 class Order {
-    uint Identifier
-    enum Status
-    DateTime OrderTime
+    +uint Identifier
+    +enum Status
+    +DateTime OrderTime
 }
 
 class Discount {
-    uint Identifier
-    Product Product
-    decimal DiscountPercentage
-    DateTime StartTime
-    DateTime EndTime
-    string? DiscountCode
+    +uint Identifier
+    +Product Product
+    +decimal DiscountPercentage
+    +DateTime StartTime
+    +DateTime EndTime
+    +string? DiscountCode
 }
 
 class Addon {
-    uint Identifier
-    string Name
-    decimal Price
-    List<Product> ApplicableProducts
-    List<Addon> UnavailableWith
+    +uint Identifier
+    +string Name
+    +decimal Price
+    +List<Product> ApplicableProducts
+    +List<Addon> UnavailableWith
 }
 
 User "1" -- "0:n" Order
@@ -70,6 +75,7 @@ Discount "0:1" -- "1" Product
 User "1" -- "1" Basket
 Addon "0:n" -- "0:n" Product
 Addon "0:n" -- "0:n" ProductCount
+Role "1" -- "0:n" User
 
 Order --> Basket
 
