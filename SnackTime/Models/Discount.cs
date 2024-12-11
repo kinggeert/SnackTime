@@ -8,5 +8,5 @@ public class Discount
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
     public string? DiscountCode { get; set; }
-    public List<Product> ApplicableProducts { get; set; }
+    public ICollection<Product> ApplicableProducts { get; set; }
 }

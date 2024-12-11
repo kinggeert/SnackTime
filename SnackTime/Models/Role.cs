@@ -3,5 +3,5 @@
 public class Role
 {
     public string Name { get; set; }
-    public List<User> UsersWithRole { get; set; }
+    public ICollection<User> UsersWithRole { get; set; }
 }

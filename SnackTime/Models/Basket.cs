@@ -3,7 +3,7 @@
 public class Basket
 {
     public User Owner { get; set; }
-    public List<ProductCount> Products { get; set; }
+    public ICollection<ProductCount> Products { get; set; }
 
     public decimal GetTotalPrice()
     {

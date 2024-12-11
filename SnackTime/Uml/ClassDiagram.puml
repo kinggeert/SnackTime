@@ -13,7 +13,7 @@ class User {
     +string Email
     +string PhoneNumber
     +Role Role
-    +List<Order> Orders
+    +ICollection<Order> Orders
     +Basket Basket
 }
 
@@ -27,20 +27,21 @@ class Product {
     +decimal Price
     +string ImagePath
     +Discount? Discount
-    +List<Addon> AvailableAddons
+    +ICollection<Addon> AvailableAddons
+    +ICollection<Discount> Discounts
 }
 
 class ProductCount {
     +Product Product
     +uint Count
-    +List<Addon> AddonsUsed
+    +ICollection<Addon> AddonsUsed
     
     +GetTotalPrice()
 }
 
 class Basket {
     +User Owner
-    +List<ProductCount> Products
+    +ICollection<ProductCount> Products
     
     +GetTotalPrice()
 }
@@ -53,7 +54,7 @@ class Order {
 
 class Discount {
     +uint Identifier
-    +Product Product
+    +ICollection<Product> ApplicableProducts
     +decimal DiscountPercentage
     +DateTime StartTime
     +DateTime EndTime
@@ -64,8 +65,8 @@ class Addon {
     +uint Identifier
     +string Name
     +decimal Price
-    +List<Product> ApplicableProducts
-    +List<Addon> UnavailableWith
+    +ICollection<Product> ApplicableProducts
+    +ICollection<Addon> UnavailableWith
 }
 
 User "1" -- "0:n" Order

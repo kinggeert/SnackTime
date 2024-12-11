@@ -6,6 +6,6 @@ public class Product
     public string Name { get; set; }
     public decimal Price { get; set; }
     public string ImagePath { get; set; }
-    public Discount? Discount { get; set; }
-    public List<Addon> AvailableAddons { get; set; }
+    public ICollection<Discount> Discounts { get; set; }
+    public ICollection<Addon> AvailableAddons { get; set; }
 }
