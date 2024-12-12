@@ -8,4 +8,5 @@ public class Product
     public string ImagePath { get; set; }
     public ICollection<Discount> Discounts { get; set; }
     public ICollection<Addon> AvailableAddons { get; set; }
+    public ProductCategory ProductCategory { get; set; }
 }

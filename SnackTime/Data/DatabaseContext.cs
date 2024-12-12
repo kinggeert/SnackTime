@@ -57,6 +57,15 @@ public class DatabaseContext : DbContext
         {
             entity.HasKey(e => e.Identifier);
             entity.HasMany(e => e.AvailableAddons);
+            entity.HasOne(e => e.ProductCategory)
+                .WithMany(e => e.ProductsInCategory);
+        });
+
+        modelBuilder.Entity<ProductCategory>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+            entity.HasMany(e => e.ProductsInCategory)
+                .WithOne(e => e.ProductCategory);
         });
 
         modelBuilder.Entity<ProductCount>(entity =>
