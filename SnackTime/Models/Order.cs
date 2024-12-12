@@ -11,7 +11,6 @@ public class Order : Basket
     }
 
     
-    public uint Identifier { get; set; }
     public DateTime? OrderTime { get; set; }
     public OrderStatus Status { get; set; }
 }

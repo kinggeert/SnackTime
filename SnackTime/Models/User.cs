@@ -8,4 +8,5 @@ public class User
     public ICollection<Order> Orders { get; set; }
     public Role Role { get; set; }
     public Basket Basket { get; set; }
+    public uint? BasketIdentifier { get; set; }
 }
