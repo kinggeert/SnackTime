@@ -30,6 +30,7 @@ class Product {
     +Discount? Discount
     +ICollection<Addon> AvailableAddons
     +ICollection<Discount> Discounts
+    +ProductCategory ProductCategory
 }
 
 class ProductCount {
@@ -51,6 +52,7 @@ class Basket {
 
 class Order {
     +enum Status
+    +enum OrderType
     +DateTime OrderTime
 }
 
@@ -71,6 +73,12 @@ class Addon {
     +ICollection<Addon> UnavailableWith
 }
 
+class ProductCategory {
+    +uint Identifier
+    +string Name
+    +ICollection<Product> ProductsInCategory
+}
+
 User "1" -- "0:n" Order
 Order "1" -- "0:n" ProductCount
 ProductCount "0:n" -- "1" Product
@@ -79,6 +87,7 @@ User "1" -- "1" Basket
 Addon "0:n" -- "0:n" Product
 Addon "0:n" -- "0:n" ProductCount
 Role "1" -- "0:n" User
+Product "0:n" -- "1" ProductCategory
 
 Order --> Basket
 
