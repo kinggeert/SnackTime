@@ -9,8 +9,15 @@ public class Order : Basket
         Ready,      // Order is ready for pickup/delivery
         Closed      // Order is completed or closed
     }
+    
+    public enum OrderType
+    {
+        Takeout,    // Order is for takeout
+        InStore     // Order is for eating in the store
+    }
 
     
     public DateTime? OrderTime { get; set; }
     public OrderStatus Status { get; set; }
+    public OrderType Type { get; set; }
 }
