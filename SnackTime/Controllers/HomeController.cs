@@ -18,17 +18,27 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(uint? category)
     {
+        if (category == null) category = 1;
+        var products = _context.Products.ToList();
+        var categories = _context.ProductCategories.ToList();
+        //temp
+        var basket = new Basket
+        {
+            Products = new List<ProductCount>()
+        };
+        var selectedCategory =
+            _context.ProductCategories
+                .Include(e => e.ProductsInCategory)
+                .FirstOrDefault(e => e.Identifier == category);
+        
         var homeViewModel = new HomeViewModel
         {
-            Products = _context.Products.ToList(),
-            Categories = _context.ProductCategories.ToList(),
-            //Temp
-            Basket = new Basket
-            {
-                Products = new List<ProductCount>()
-            }
+            Products = products,
+            Categories = categories,
+            Basket = basket,
+            SelectedCategory = selectedCategory
         };
         return View(homeViewModel);
     }
