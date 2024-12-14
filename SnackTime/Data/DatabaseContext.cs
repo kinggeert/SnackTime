@@ -27,9 +27,11 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<Addon>(entity =>
         {
             entity.HasKey(e => e.Identifier);
-            entity.HasMany(addon => addon.ApplicableProducts)
-                .WithMany(product => product.AvailableAddons);
-            entity.HasMany(addon => addon.UnavailableWith);
+            entity.HasMany(e => e.ApplicableProducts)
+                .WithMany(e => e.AvailableAddons);
+            entity.HasMany(e => e.UnavailableWith);
+            entity.HasMany(e => e.UsedInProductCounts)
+                .WithMany(e => e.AddonsUsed);
         });
 
         modelBuilder.Entity<Basket>(entity =>
@@ -73,7 +75,8 @@ public class DatabaseContext : DbContext
         {
             entity.HasKey(e => e.Identifier);
             entity.HasOne(e => e.Product);
-            entity.HasMany(e => e.AddonsUsed);
+            entity.HasMany(e => e.AddonsUsed)
+                .WithMany(e => e.UsedInProductCounts);
         });
 
         modelBuilder.Entity<Role>(entity =>

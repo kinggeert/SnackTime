@@ -7,4 +7,5 @@ public class Addon
     public decimal Price { get; set; }
     public ICollection<Product> ApplicableProducts { get; set; }
     public ICollection<Addon> UnavailableWith { get; set; }
+    public ICollection<ProductCount> UsedInProductCounts { get; set; }
 }
