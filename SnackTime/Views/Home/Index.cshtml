@@ -12,6 +12,7 @@
 </style>
 
 <div class="grid-wrapper">
+    <!-- Section for categories -->
     <div>
         <table class="table">
             <thead>
@@ -22,16 +23,18 @@
             </tr>
             </thead>
             <tbody>
-            @foreach (var item in Model.Categories) {
+            @foreach (var item in Model.Categories)
+            {
                 <tr>
                     <td>
-                        @item.Name
+                        <a asp-action="Index" asp-route-id="@item.Identifier">@item.Name</a>
                     </td>
                 </tr>
             }
             </tbody>
         </table>
     </div>
+    <!-- Section for Products -->
     <div>
         <table class="table">
             <thead>
@@ -42,17 +45,40 @@
             </tr>
             </thead>
             <tbody>
-            @foreach (var item in Model.SelectedCategory.ProductsInCategory) {
+            @foreach (var product in Model.SelectedCategory.ProductsInCategory)
+            {
                 <tr>
                     <td>
-                        @item.Name
+                        <!-- Button to trigger modal -->
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#productModal-@product.Identifier">
+                            @product.Name
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="productModal-@product.Identifier" tabindex="-1" role="dialog" aria-labelledby="productModalLabel-@product.Identifier" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="productModalLabel-@product.Identifier">@product.Name</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        @product.Name
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             }
             </tbody>
         </table>
     </div>
+    <!-- Section for basket -->
     <div>
-        thing 3
+        basket
     </div>
 </div>

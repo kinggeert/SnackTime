@@ -18,9 +18,9 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public IActionResult Index(uint? category)
+    public IActionResult Index(uint? id)
     {
-        if (category == null) category = 1;
+        if (id == null) id = 1;
         var products = _context.Products.ToList();
         var categories = _context.ProductCategories.ToList();
         //temp
@@ -31,7 +31,7 @@ public class HomeController : Controller
         var selectedCategory =
             _context.ProductCategories
                 .Include(e => e.ProductsInCategory)
-                .FirstOrDefault(e => e.Identifier == category);
+                .FirstOrDefault(e => e.Identifier == id);
         
         var homeViewModel = new HomeViewModel
         {
