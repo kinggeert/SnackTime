@@ -56,19 +56,43 @@
                         </button>
 
                         <!-- Modal -->
-                        <div class="modal fade" id="productModal-@product.Identifier" tabindex="-1" role="dialog" aria-labelledby="productModalLabel-@product.Identifier" aria-hidden="true">
+                        <div class="modal fade" id="productModal-@product.Identifier" tabindex="-1" role="dialog" aria-labelledby="productModalLabel-@product.Identifier" data-product-id="@product.Identifier" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="productModalLabel-@product.Identifier">@product.Name</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        @product.Name
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    </div>
+                                    <form method="post" asp-action="AddProductToBasket">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="productModalLabel-@product.Identifier">@product.Name</h5>
+                                            <h5>
+                                                €<span id="productPrice-@product.Identifier"
+                                                       data-base-price="@product.Price.ToString("F2")">
+                                                    @product.Price.ToString("F2")
+                                                </span>
+                                            </h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="ProductId" value="@product.Identifier" />
+                                            <input type="hidden" name="ProductName" value="@product.Name" />
+                                            <input type="hidden" name="ProductPrice" value="@product.Price" />
+
+                                            <h6>Select Addons:</h6>
+                                            @foreach (var addon in product.AvailableAddons)
+                                            {
+                                                <div>
+                                                    <input type="checkbox"
+                                                           name="SelectedAddons"
+                                                           value="@addon.Identifier"
+                                                           id="addon-@addon.Identifier"
+                                                           data-addon-price="@addon.Price"
+                                                           class="addon-checkbox" />
+                                                    <label for="addon-@addon.Identifier">@addon.Name (€@addon.Price)</label>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                                            <button type="submit" class="btn btn-primary">Toevoegen</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -154,4 +178,53 @@
             activeButton.classList.add('active');
         }
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const updatePrice = (productId) => {
+
+            // Attempt to find the price element
+            const priceElement = document.querySelector(`#productPrice-${productId}`);
+            if (!priceElement) {
+                console.error(`Price element not found for product ID: ${productId}`);
+                return;
+            }
+
+            const basePrice = parseFloat(priceElement.getAttribute('data-base-price'));
+            if (isNaN(basePrice)) {
+                console.error(`Base price is invalid for product ID: ${productId}`);
+                return;
+            }
+
+            // Find all checked addon checkboxes
+            const addonCheckboxes = document.querySelectorAll(`#productModal-${productId} .addon-checkbox:checked`);
+            console.log(`Checked add-ons for product ${productId}:`, addonCheckboxes);
+
+            let addonsPrice = 0;
+            addonCheckboxes.forEach((checkbox) => {
+                const addonPrice = parseFloat(checkbox.getAttribute('data-addon-price'));
+                if (!isNaN(addonPrice)) {
+                    addonsPrice += addonPrice;
+                } else {
+                    console.error(`Addon price invalid for checkbox: ${checkbox.id}`);
+                }
+            });
+
+            const totalPrice = basePrice + addonsPrice;
+            priceElement.textContent = totalPrice.toFixed(2);
+
+            console.log(`Updated total price for product ${productId}: €${totalPrice}`);
+        };
+
+        // Attach change listeners to all addon-checkboxes
+        document.querySelectorAll(".addon-checkbox").forEach((checkbox) => {
+            checkbox.addEventListener("change", function () {
+                const productId = this.closest(".modal").getAttribute("data-product-id");
+                updatePrice(productId);
+            });
+        });
+    });
+
+
+
+
 </script>

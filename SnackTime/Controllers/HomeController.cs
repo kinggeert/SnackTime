@@ -23,7 +23,9 @@ public class HomeController : Controller
     {
         Basket basket = null;
         if (id == null) id = 1;
-        var products = _context.Products.ToList();
+        var products = _context.Products
+            .Include(e => e.AvailableAddons)
+            .ToList();
         var categories = _context.ProductCategories.ToList();
         
         var claimIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
