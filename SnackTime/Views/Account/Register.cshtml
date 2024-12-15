@@ -1,0 +1,29 @@
+﻿@model SnackTime.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Registreren";
+}
+
+<html>
+<head>
+    <title>Registreren</title>
+</head>
+<body>
+<Form asp-action="Register" method="post">
+    <div>
+        <label>Naam</label>
+        <input asp-for="Name"/>
+    </div>
+    <div>
+        <label>E-mail adres</label>
+        <input asp-for="Email"/>
+    </div>
+    <div>
+        <label>Wachtwoord</label>
+        <input type="password" asp-for="Password"/>
+    </div>
+    <button type="submit">Registreren</button>
+</Form>
+<button type="button" onclick="location.href='@Url.Action("Login", "Account")'">Log in</button>
+</body>
+</html>

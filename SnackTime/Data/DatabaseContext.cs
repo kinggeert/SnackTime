@@ -10,8 +10,9 @@ public class DatabaseContext : DbContext
     public DbSet<Discount> Discounts { get; init; }
     public DbSet<Order> Orders { get; init; }
     public DbSet<Product> Products { get; init; }
-    public DbSet<ProductCategory> ProductCategories { get; set; }
+    public DbSet<ProductCategory> ProductCategories { get; init; }
     public DbSet<ProductCount> ProductCounts { get; init; }
+    public DbSet<Role> Roles { get; init; }
     public DbSet<User> Users { get; init; }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

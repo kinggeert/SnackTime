@@ -4,7 +4,7 @@
     Layout = null;
 }
 
-<Form asp-action="Login" method="post">
+<form asp-action="Login" method="post">
     <div>
         <label>E-mail adres</label>
         <input asp-for="Email"/>
@@ -14,4 +14,5 @@
         <input type="password" asp-for="Password"/>
     </div>
     <button type="submit">Inloggen</button>
-</Form>
+</form>
+<button type="button" onclick="location.href='@Url.Action("Register", "Account")'">Registreren</button>

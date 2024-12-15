@@ -4,7 +4,7 @@ public class Basket
 {
     public uint Identifier { get; set; }
     public User Owner { get; set; }
-    public ICollection<ProductCount> Products { get; set; }
+    public ICollection<ProductCount> Products { get; set; } = new List<ProductCount>();
 
     public decimal GetTotalPrice()
     {

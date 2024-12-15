@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SnackTime.Data;
+using SnackTime.Models;
 using SnackTime.ViewModels;
 
 namespace SnackTime.Controllers;
@@ -57,5 +58,34 @@ public class AccountController : Controller
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Index", "Home");
+    }
+
+    [HttpGet]
+    public IActionResult Register()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Register(RegisterViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var role = _context.Roles.FirstOrDefault(e => e.Name == "customer");
+            if (role == null) return NotFound();
+            var user = new User
+            {
+                Email = model.Email,
+                Name = model.Name,
+                PasswordHash = model.Password,
+                Role = role
+            };
+            
+            _context.Add(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Login));
+        }
+        
+        return View(model);
     }
 }
