@@ -38,7 +38,9 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<Basket>(entity =>
         {
             entity.HasKey(e => e.Identifier);
-            entity.HasMany(e => e.Products);
+            entity.HasMany(e => e.Products)
+                .WithOne(e => e.Basket)
+                .HasForeignKey(e => e.BasketIdentifier);
             entity.HasOne(e => e.Owner)
                 .WithOne(e => e.Basket)
                 .HasForeignKey<User>(e => e.BasketIdentifier);

@@ -11,4 +11,5 @@ public class HomeViewModel
     public ProductCount ProductToAdd { get; set; }
     public Order.OrderType SelectedOrderType { get; set; }
     public uint? TableNumber { get; set; }
+    public List<uint>? SelectedAddons { get; set; }
 }

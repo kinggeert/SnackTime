@@ -62,17 +62,10 @@
                                     <form method="post" asp-action="AddProductToBasket">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="productModalLabel-@product.Identifier">@product.Name</h5>
-                                            <h5>
-                                                €<span id="productPrice-@product.Identifier"
-                                                       data-base-price="@product.Price.ToString("F2")">
-                                                    @product.Price.ToString("F2")
-                                                </span>
-                                            </h5>
                                         </div>
                                         <div class="modal-body">
-                                            <input type="hidden" name="ProductId" value="@product.Identifier" />
-                                            <input type="hidden" name="ProductName" value="@product.Name" />
-                                            <input type="hidden" name="ProductPrice" value="@product.Price" />
+                                            <input type="hidden" id="productId" name="ProductToAdd.Product.Identifier" value="@product.Identifier" />
+                                            <input type="hidden" id="basketId" name="Basket.Identifier" value="@Model.Basket.Identifier" />
 
                                             <h6>Select Addons:</h6>
                                             @foreach (var addon in product.AvailableAddons)
@@ -87,8 +80,16 @@
                                                     <label for="addon-@addon.Identifier">@addon.Name (€@addon.Price)</label>
                                                 </div>
                                             }
+                                            <label for="ProductCount">Aantal:</label>
+                                            <input type="number" id="ProductCount" name="ProductToAdd.Count" class="form-control" value="1" min="1" />
                                         </div>
                                         <div class="modal-footer">
+                                            <h5>
+                                                €<span id="productPrice-@product.Identifier"
+                                                       data-base-price="@product.Price.ToString("F2")">
+                                                    @product.Price.ToString("F2")
+                                                </span>
+                                            </h5>
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
                                             <button type="submit" class="btn btn-primary">Toevoegen</button>
                                         </div>

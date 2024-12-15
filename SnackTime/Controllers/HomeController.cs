@@ -55,6 +55,31 @@ public class HomeController : Controller
         return View(homeViewModel);
     }
 
+    [HttpPost]
+    public async Task<IActionResult> AddProductToBasket(HomeViewModel model)
+    {
+        if (model.Basket ==null) return BadRequest();
+        var selectedAddons = new List<Addon>();
+        foreach (uint addonIdentifier in model.SelectedAddons)
+        {
+            var addon = _context.Addons.FirstOrDefault(e => e.Identifier == addonIdentifier);
+            if (addon != null) selectedAddons.Add(addon);
+        }
+        var product = _context.Products.FirstOrDefault(e => e.Identifier == model.ProductToAdd.Product.Identifier);
+        if (product == null) return NotFound();
+        var productCount = new ProductCount
+        {
+            AddonsUsed = selectedAddons,
+            Product = product,
+            Count = model.ProductToAdd.Count,
+            BasketIdentifier = model.Basket.Identifier
+        };
+        
+        _context.ProductCounts.Add(productCount);
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Index");
+    }
+
     public IActionResult Privacy()
     {
         return View();
