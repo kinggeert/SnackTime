@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SnackTime.Data;
@@ -78,5 +79,48 @@ public class OrdersController(DatabaseContext context) : Controller
         _context.Entry(order).State = EntityState.Modified;
         _context.SaveChanges();
         return RedirectToAction("Index");
+    }
+
+    public IActionResult History()
+    {
+        var claimIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (claimIdentifier == null) return NotFound();
+        uint userIdentifier = uint.Parse(claimIdentifier.Value);
+        var viewModel = new HistoryViewModel
+        {
+            Orders = _context.Orders
+                .Where(e => e.Owner.Identifier == userIdentifier)
+                .Include(e => e.Products)
+                .ThenInclude(e => e.Product)
+                .Include(e => e.Products)
+                .ThenInclude(e => e.AddonsUsed)
+                .ToList()
+        };
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> AddOrderToBasket(HistoryViewModel model)
+    {
+        if (model.OrderToAddToBasketIdentifier != null)
+        {
+            var claimIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (claimIdentifier == null) return NotFound();
+            
+            var basket = _context.Baskets
+                .Include(e => e.Products)
+                .First(e => e.Owner.Identifier == uint.Parse(claimIdentifier.Value));
+            var order = _context.Orders
+                .Include(e => e.Products)
+                .First(e => e.Identifier == model.OrderToAddToBasketIdentifier);
+            
+            basket.Products = order.Products;
+            
+            _context.Entry(basket).State = EntityState.Modified;
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Home");
+        }
+        return RedirectToAction("History");
     }
 }

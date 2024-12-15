@@ -1,0 +1,65 @@
+﻿@model SnackTime.ViewModels.HistoryViewModel
+
+@{
+    ViewData["Title"] = "Geschiedenis";
+}
+
+<div>
+    @foreach (var order in Model.Orders)
+    {
+        <div>
+            <div>
+                <h5>@order.OrderTime</h5>
+            </div>
+            <div>
+                €@order.GetTotalPrice()
+                @order.Type
+                @order.Status
+            </div>
+            <div>
+                <!-- Button to trigger modal -->
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#productModal-@order.Identifier">
+                    Details
+                </button>
+            </div>
+            <br/>
+
+            <!-- Modal -->
+            <div class="modal fade" id="productModal-@order.Identifier" tabindex="-1" role="dialog" aria-labelledby="productModalLabel-@order.Identifier" data-product-id="@order.Identifier" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <form method="post" asp-action="AddOrderToBasket">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="productModalLabel-@order.Identifier">@order.OrderTime</h5>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="productId" name="OrderToAddToBasketIdentifier" value="@order.Identifier"/>
+                                @foreach (var product in order.Products)
+                                {
+                                    <div>
+                                        <h6>
+                                            @product.Product.Name @product.Count €@product.GetTotalPrice()
+                                        </h6>
+                                        @foreach (var addon in product.AddonsUsed)
+                                        {
+                                            @addon.Name
+                                            <br/>
+                                        }
+                                        <br/>
+                                    </div>
+                                }
+                            </div>
+                            <div class="modal-footer">
+                                <h5>
+                                    €@order.GetTotalPrice()
+                                </h5>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                                <button type="submit" class="btn btn-primary">Toevoegen</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
