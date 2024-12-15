@@ -37,7 +37,10 @@ public class HomeController : Controller
             basket = _context.Baskets
                 .Include(e => e.Products)
                 .ThenInclude(e => e.Product)
+                .Include(e => e.Products)
+                .ThenInclude(e => e.AddonsUsed)
                 .FirstOrDefault(e => e.Identifier == user.BasketIdentifier);
+            if (basket == null) return NotFound();
         }
         
         var selectedCategory =

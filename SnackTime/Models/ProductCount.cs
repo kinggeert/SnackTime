@@ -11,6 +11,11 @@ public class ProductCount
 
     public decimal GetTotalPrice()
     {
-        return Product.Price * Count;
+        decimal addonPrice = 0;
+        foreach (var addon in AddonsUsed)
+        {
+            addonPrice += addon.Price;
+        }
+        return (Product.Price + addonPrice) * Count;
     }
 }
