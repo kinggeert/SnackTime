@@ -1,0 +1,75 @@
+﻿@model SnackTime.ViewModels.OrdersViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div>
+    @foreach (var order in Model.Orders) {
+        <div class="card" style="width: 60rem;">
+            <div style="display: flex; gap: 10px; align-items: center;">
+                Order tijd: @order.OrderTime | Klant: @order.Owner.Name
+                <form method="post" asp-action="SetPreparing">
+                    <input type="hidden" id="OrderId" name="OrderToUpdateIdentifier" value="@order.Identifier" />
+                    @if (order.Status == Order.OrderStatus.Preparing)
+                    {
+                        <button type="submit" class="btn btn-primary">Preparing</button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-outline-primary">Preparing</button>
+                    }
+                </form>
+                <form method="post" asp-action="SetReady">
+                    <input type="hidden" id="OrderId" name="OrderToUpdateIdentifier" value="@order.Identifier" />
+                    @if (order.Status == Order.OrderStatus.Ready)
+                    {
+                        <button type="submit" class="btn btn-primary">Ready</button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-outline-primary">Ready</button>
+                    }
+                </form>
+                <form method="post" asp-action="SetClosed">
+                    <input type="hidden" id="OrderId" name="OrderToUpdateIdentifier" value="@order.Identifier" />
+                    <button type="submit" class="btn btn-outline-primary">Closed</button>
+                </form>
+            </div>
+
+            <div>
+            <b>Items in order:</b>
+        </div>
+        @foreach (var item in order.Products)
+        {
+            <div class="card" style="width: 40rem">
+                <div>
+                    <h5>
+                        @item.Product.Name
+                        @item.Count
+                    </h5>
+                </div>
+                <div>
+                    <h7>Addons:</h7>
+                </div>
+                <div>
+                    @foreach (var addon in item.AddonsUsed)
+                    {
+                        @addon.Name
+                        <br/>
+                    }
+                </div>
+            </div>
+            <br/>
+        }
+        </div>
+        <br/>
+    }
+</div>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
