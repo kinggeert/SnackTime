@@ -81,7 +81,11 @@
                                                 </div>
                                             }
                                             <label for="ProductCount">Aantal:</label>
-                                            <input type="number" id="ProductCount" name="ProductToAdd.Count" class="form-control" value="1" min="1" />
+                                            <input type="number" 
+                                                   id="ProductCount" 
+                                                   name="ProductToAdd.Count" 
+                                                   class="form-control" 
+                                                   value="1" min="1" />
                                         </div>
                                         <div class="modal-footer">
                                             <h5>
@@ -210,7 +214,14 @@
                 }
             });
 
-            const totalPrice = basePrice + addonsPrice;
+            const productCountInput = document.getElementById("ProductCount");
+            const productCount = parseInt(productCountInput.value, 10);
+            if (isNaN(productCount) || productCount < 1) {
+                console.error(`Invalid product count: ${productCount}`);
+                return;
+            }
+
+            const totalPrice = (basePrice + addonsPrice) * productCount;
             priceElement.textContent = totalPrice.toFixed(2);
 
             console.log(`Updated total price for product ${productId}: €${totalPrice}`);
@@ -223,6 +234,17 @@
                 updatePrice(productId);
             });
         });
+
+        const productCountInput = document.getElementById("ProductCount");
+        if (productCountInput) {
+            productCountInput.addEventListener("input", function () {
+                const modalElement = this.closest(".modal");
+                const productId = modalElement ? modalElement.getAttribute("data-product-id") : null;
+                if (productId) {
+                    updatePrice(productId);
+                }
+            });
+        }
     });
 
 
