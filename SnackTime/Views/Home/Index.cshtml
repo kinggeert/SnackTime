@@ -133,7 +133,7 @@
                         <input type="number" id="TableNumber" name="TableNumber" class="form-control" value="@Model.TableNumber" />
                     </div>
                     <div>
-                        <input type="hidden" if="Basket" name="Basket" value="@(Model.Basket)"/>
+                        <input type="hidden" id="basketId" name="Basket.Identifier" value="@Model.Basket.Identifier" />
                         @if (Model.Basket.Products != null)
                         {
                             @foreach (var item in Model.Basket.Products)

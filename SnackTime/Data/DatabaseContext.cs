@@ -38,13 +38,9 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<Basket>(entity =>
         {
             entity.HasKey(e => e.Identifier);
-            entity.HasMany(e => e.Products)
-                .WithOne(e => e.Basket)
-                .HasForeignKey(e => e.BasketIdentifier);
-            entity.HasOne(e => e.Owner)
-                .WithOne(e => e.Basket)
-                .HasForeignKey<User>(e => e.BasketIdentifier);
+            entity.HasMany(e => e.Products);
         });
+            
 
         modelBuilder.Entity<Discount>(entity =>
         {
@@ -55,9 +51,12 @@ public class DatabaseContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasMany(e => e.Products);
-            entity.HasOne(e => e.Owner);
+            entity.HasKey(e => e.Identifier);
+            entity.HasOne(e => e.Owner)
+                .WithMany(e => e.Orders)
+                .HasForeignKey(e => e.OwnerIdentifier);
         });
+            
 
         modelBuilder.Entity<Product>(entity =>
         {

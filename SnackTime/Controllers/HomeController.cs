@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SnackTime.Data;
@@ -59,6 +60,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> AddProductToBasket(HomeViewModel model)
     {
         if (model.Basket ==null) return BadRequest();
@@ -75,13 +77,66 @@ public class HomeController : Controller
             AddonsUsed = selectedAddons,
             Product = product,
             Count = model.ProductToAdd.Count,
-            BasketIdentifier = model.Basket.Identifier
         };
         
-        _context.ProductCounts.Add(productCount);
+        var basket = _context.Baskets.First(e => e.Identifier == model.Basket.Identifier);
+        basket.Products.Add(productCount);
+        
+        _context.Baskets.Update(basket);
         await _context.SaveChangesAsync();
         return RedirectToAction("Index");
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> SubmitOrder(HomeViewModel model)
+    {
+        if (model.Basket == null) return BadRequest();
+
+        var basket = await _context.Baskets
+            .Include(b => b.Products)
+            .ThenInclude(pc => pc.Product)
+            .Include(b => b.Products)
+            .ThenInclude(pc => pc.AddonsUsed)
+            .Include(b => b.Owner)
+            .FirstOrDefaultAsync(b => b.Identifier == model.Basket.Identifier);
+
+        if (basket == null)
+        {
+            return BadRequest("Basket not found.");
+        }
+
+        // Create new ProductCount entities for the order
+        var products = basket.Products.Select(pc => new ProductCount
+        {
+            Product = pc.Product,
+            Count = pc.Count,
+            AddonsUsed = pc.AddonsUsed
+        }).ToList();
+
+        var order = new Order
+        {
+            Products = products,
+            Owner = basket.Owner,
+            Status = Order.OrderStatus.Pending,
+            OrderTime = DateTime.Now,
+            TableNumber = model.TableNumber
+        };
+        
+        basket.Products.Clear();
+
+        _context.Orders.Add(order);
+        _context.Baskets.Update(basket);
+
+        // Commit the transaction
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Index");
+    }
+
+
+
+
 
     public IActionResult Privacy()
     {

@@ -5,6 +5,7 @@ public class Basket
     public uint Identifier { get; set; }
     public User Owner { get; set; }
     public ICollection<ProductCount> Products { get; set; } = new List<ProductCount>();
+    public Order.OrderType Type { get; set; }
 
     public decimal GetTotalPrice()
     {

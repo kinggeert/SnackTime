@@ -1,6 +1,6 @@
 ﻿namespace SnackTime.Models;
 
-public class Order : Basket
+public class Order
 {
     public enum OrderStatus
     {
@@ -17,8 +17,22 @@ public class Order : Basket
     }
 
     
+    public uint Identifier { get; set; }
+    public User Owner { get; set; }
+    public ICollection<ProductCount> Products { get; set; } = new List<ProductCount>();
     public DateTime? OrderTime { get; set; }
     public OrderStatus Status { get; set; }
     public OrderType Type { get; set; }
     public uint? TableNumber { get; set; }
+    public uint OwnerIdentifier { get; set; }
+    
+    public decimal GetTotalPrice()
+    {
+        decimal totalPrice = 0;
+        foreach (var product in Products)
+        {
+            totalPrice += product.GetTotalPrice();
+        }
+        return totalPrice;
+    }
 }

@@ -6,8 +6,6 @@ public class ProductCount
     public Product Product { get; set; }
     public uint Count { get; set; }
     public ICollection<Addon> AddonsUsed { get; set; }
-    public Basket Basket { get; set; }
-    public uint BasketIdentifier { get; set; }
 
     public decimal GetTotalPrice()
     {
