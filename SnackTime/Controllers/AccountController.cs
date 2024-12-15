@@ -79,7 +79,8 @@ public class AccountController : Controller
                 Email = model.Email,
                 Name = model.Name,
                 PasswordHash = model.Password,
-                Role = role
+                Role = role,
+                Basket = new Basket()
             };
 
             _context.Add(user);

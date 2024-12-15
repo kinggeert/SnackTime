@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SnackTime.Data;
@@ -20,14 +21,23 @@ public class HomeController : Controller
 
     public IActionResult Index(uint? id)
     {
+        Basket basket = null;
         if (id == null) id = 1;
         var products = _context.Products.ToList();
         var categories = _context.ProductCategories.ToList();
-        //temp
-        var basket = new Basket
+        
+        var claimIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (claimIdentifier != null)
         {
-            Products = new List<ProductCount>()
-        };
+            var userIdentifier = uint.Parse(claimIdentifier.Value);
+            var user = _context.Users.FirstOrDefault(e => e.Identifier == userIdentifier);
+            if (user == null) return NotFound();
+            basket = _context.Baskets
+                .Include(e => e.Products)
+                .ThenInclude(e => e.Product)
+                .FirstOrDefault(e => e.Identifier == user.BasketIdentifier);
+        }
+        
         var selectedCategory =
             _context.ProductCategories
                 .Include(e => e.ProductsInCategory)

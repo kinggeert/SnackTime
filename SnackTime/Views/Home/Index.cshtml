@@ -1,4 +1,5 @@
-﻿@Model HomeViewModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@Model HomeViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -79,6 +80,78 @@
     </div>
     <!-- Section for basket -->
     <div>
-        basket
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div>
+                <label>Winkelmand</label>
+            </div>
+            <div class="btn-group" role="group" aria-label="Order Type Selector">
+                <form method="post" asp-action="SubmitOrder">
+                    <div>
+                        <input type="hidden" id="SelectedOrderType" name="OrderType" value="@(Model.SelectedOrderType.ToString())" />
+
+                        <button type="button" class="btn btn-outline-primary @((Model.SelectedOrderType == Order.OrderType.Takeout) ? "active" : "")"
+                                onclick="setOrderType('Takeout')">
+                            Takeout
+                        </button>
+                        <button type="button" class="btn btn-outline-primary @((Model.SelectedOrderType == Order.OrderType.InStore) ? "active" : "")"
+                                onclick="setOrderType('InStore')">
+                            In-Store
+                        </button>
+                    </div>
+                    <div>
+                        <label for="TableNumber">Tafelnummer</label>
+                        <input type="number" id="TableNumber" name="TableNumber" class="form-control" value="@Model.TableNumber" />
+                    </div>
+                    <div>
+                        <input type="hidden" if="Basket" name="Basket" value="@(Model.Basket)"/>
+                        @if (Model.Basket.Products != null)
+                        {
+                            @foreach (var item in Model.Basket.Products)
+                            {
+                                <div>
+                                    <div>
+                                        @item.Product.Name
+                                    </div>
+                                    <div>
+                                        @item.Count
+
+                                        @item.GetTotalPrice()
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Bestellen</button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div>
+                Log aub in of registreer een account om een bestelling te plaatsen.
+            </div>
+            <div>
+                <button type="button" onclick="location.href='@Url.Action("Login", "Account")'">Inloggen</button>
+                <button type="button" onclick="location.href='@Url.Action("Register", "Account")'">Registreren</button>
+            </div>
+        }
     </div>
 </div>
+
+
+<script>
+    function setOrderType(orderType) {
+        document.getElementById('selectedOrderType').value = orderType;
+
+        // Optionally highlight the selected button
+        const buttons = document.querySelectorAll('.btn-group .btn');
+        buttons.forEach(button => button.classList.remove('active'));
+        
+        const activeButton = document.querySelector(`button[onclick="setOrderType('${orderType}')"]`);
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
+    }
+</script>

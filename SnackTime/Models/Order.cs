@@ -20,4 +20,5 @@ public class Order : Basket
     public DateTime? OrderTime { get; set; }
     public OrderStatus Status { get; set; }
     public OrderType Type { get; set; }
+    public uint? TableNumber { get; set; }
 }
