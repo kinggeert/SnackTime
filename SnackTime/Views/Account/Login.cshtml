@@ -1,18 +1,17 @@
-﻿@model TModel
+﻿@model SnackTime.ViewModels.LoginViewModel
 
 @{
     Layout = null;
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      
-</div>
-</body>
-</html>
+<Form asp-action="Login" method="post">
+    <div>
+        <label>E-mail adres</label>
+        <input asp-for="Email"/>
+    </div>
+    <div>
+        <label>Wachtwoord</label>
+        <input type="password" asp-for="Password"/>
+    </div>
+    <button type="submit">Inloggen</button>
+</Form>
