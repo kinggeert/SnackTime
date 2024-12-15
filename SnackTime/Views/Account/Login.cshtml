@@ -1,9 +1,14 @@
 ﻿@model SnackTime.ViewModels.LoginViewModel
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Log in";
 }
 
+<html>
+<head>
+    <title>Profile</title>
+</head>
+<body>
 <form asp-action="Login" method="post">
     <div>
         <label>E-mail adres</label>
@@ -16,3 +21,5 @@
     <button type="submit">Inloggen</button>
 </form>
 <button type="button" onclick="location.href='@Url.Action("Register", "Account")'">Registreren</button>
+</body>
+</html>
