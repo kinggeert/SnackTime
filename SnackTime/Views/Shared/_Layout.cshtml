@@ -29,7 +29,7 @@
                     <li class="nav-item">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Log uit</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Profile">Profiel</a>
                         }
                         @if (!User.Identity.IsAuthenticated)
                         {

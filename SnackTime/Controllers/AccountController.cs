@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SnackTime.Data;
@@ -41,11 +42,11 @@ public class AccountController : Controller
                     new Claim(ClaimTypes.Role, user.Role.Name),
                     new Claim(ClaimTypes.NameIdentifier, user.Identifier.ToString())
                 };
-                
+
                 // Create the user's claimsPrincipal
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                
+
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
                 return RedirectToAction("Index", "Home");
             }
@@ -80,12 +81,49 @@ public class AccountController : Controller
                 PasswordHash = model.Password,
                 Role = role
             };
-            
+
             _context.Add(user);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Login));
         }
-        
+
         return View(model);
     }
+
+    [HttpGet]
+    [Authorize]
+    public IActionResult Profile()
+    {
+        var claimIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (claimIdentifier == null) return NotFound();
+        var userIdentifier = uint.Parse(claimIdentifier.Value);
+        var user = _context.Users.FirstOrDefault(e => e.Identifier == userIdentifier);
+        var model = new ProfileViewModel
+        {
+            UserIdentifier = user.Identifier,
+            Email = user.Email,
+            Name = user.Name,
+            Password = user.PasswordHash
+        };
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Profile(ProfileViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = _context.Users.First(e => e.Identifier == model.UserIdentifier);
+            
+            user.Email = model.Email;
+            user.Name = model.Name;
+            user.PasswordHash = model.Password;
+            
+            _context.Attach(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Home");
+        }
+        return View(model);
+    }
+
 }

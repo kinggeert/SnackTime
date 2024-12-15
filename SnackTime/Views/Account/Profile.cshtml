@@ -1,0 +1,30 @@
+﻿@model SnackTime.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<html>
+<head>
+    <title>Profile</title>
+</head>
+<body>
+<Form asp-action="Register" method="post">
+    <input type="hidden" asp-for="UserIdentifier"/>
+    <div>
+        <label>Naam</label>
+        <input asp-for="Name"/>
+    </div>
+    <div>
+        <label>E-mail adres</label>
+        <input asp-for="Email"/>
+    </div>
+    <div>
+        <label>Wachtwoord</label>
+        <input type="password" asp-for="Password"/>
+    </div>
+    <!--<button type="submit">Update</button> (this shit is broken and this is not priority enough to fix rn) -->
+</Form>
+<button type="button" onclick="location.href='@Url.Action("Logout", "Account")'">Log uit</button>
+</body>
+</html>
