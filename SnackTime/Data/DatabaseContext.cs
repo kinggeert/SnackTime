@@ -94,6 +94,22 @@ public class DatabaseContext : DbContext
             entity.HasOne(e => e.Basket);
             entity.HasMany(e => e.Orders);
         });
+        
+        
+        var customerRole = new Role() {Name = "customer" };
+        var cookRole = new Role() {Name = "cook" };
+        var adminRole = new Role() {Name = "admin" };
+        var adminUser = new User()
+        {
+            Name = "admin",
+            Email = "admin@admin.com",
+            PasswordHash = "admin"
+        };
+        
+        modelBuilder.Entity<Role>().HasData(customerRole);
+        modelBuilder.Entity<Role>().HasData(cookRole);
+        modelBuilder.Entity<Role>().HasData(adminRole);
+        modelBuilder.Entity<User>().HasData(adminUser);
     }
 }
 
