@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@Model HomeViewModel
+@model SnackTime.ViewModels.HomeViewModel
+
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -10,109 +11,107 @@
         grid-template-columns: 1fr 1fr 1fr;
         grid-template-rows: 100%;
     }
+    
+    .bottom-spacing {
+        margin-bottom: 2mm;
+    }
+
+    .top-spacing {
+        margin-top: 2mm;
+    }
 </style>
 
 <div class="grid-wrapper">
     <!-- Section for categories -->
     <div>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>
-                    Categorie
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model.Categories)
-            {
-                <tr>
-                    <td>
-                        <a asp-action="Index" asp-route-id="@item.Identifier">@item.Name</a>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+        <h5>
+            Categorie
+        </h5>
+        @foreach (var item in Model.Categories)
+        {
+            <div>
+                @if (Model.SelectedCategory.Identifier == item.Identifier)
+                {
+                    <a class="btn btn-primary bottom-spacing" asp-action="Index" asp-route-id="@item.Identifier">@item.Name</a>
+                }
+                else
+                {
+                    <a class="btn btn-outline-primary bottom-spacing" asp-action="Index" asp-route-id="@item.Identifier">@item.Name</a>
+                }
+            </div>
+        }
     </div>
     <!-- Section for Products -->
     <div>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>
-                    Producten
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var product in Model.SelectedCategory.ProductsInCategory)
-            {
-                <tr>
-                    <td>
-                        <!-- Button to trigger modal -->
-                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#productModal-@product.Identifier">
-                            @product.Name
-                        </button>
+        <h5>
+            Producten
+        </h5>
+        @foreach (var product in Model.SelectedCategory.ProductsInCategory)
+        {
+            <div>
+                <!-- Button to trigger modal -->
+                <button type="button" class="btn btn-primary btn-sm bottom-spacing" data-bs-toggle="modal" data-bs-target="#productModal-@product.Identifier">
+                    @product.Name
+                </button>
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="productModal-@product.Identifier" tabindex="-1" role="dialog" aria-labelledby="productModalLabel-@product.Identifier" data-product-id="@product.Identifier" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <form method="post" asp-action="AddProductToBasket">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="productModalLabel-@product.Identifier">@product.Name</h5>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="hidden" id="productId" name="ProductToAdd.Product.Identifier" value="@product.Identifier" />
-                                            <input type="hidden" id="basketId" name="Basket.Identifier" value="@Model.Basket.Identifier" />
-
-                                            <h6>Select Addons:</h6>
-                                            @foreach (var addon in product.AvailableAddons)
-                                            {
-                                                <div>
-                                                    <input type="checkbox"
-                                                           name="SelectedAddons"
-                                                           value="@addon.Identifier"
-                                                           id="addon-@addon.Identifier"
-                                                           data-addon-price="@addon.Price"
-                                                           class="addon-checkbox" />
-                                                    <label for="addon-@addon.Identifier">@addon.Name (€@addon.Price)</label>
-                                                </div>
-                                            }
-                                            <label for="ProductCount">Aantal:</label>
-                                            <input type="number" 
-                                                   id="ProductCount" 
-                                                   name="ProductToAdd.Count" 
-                                                   class="form-control" 
-                                                   value="1" min="1" />
-                                        </div>
-                                        <div class="modal-footer">
-                                            <h5>
-                                                €<span id="productPrice-@product.Identifier"
-                                                       data-base-price="@product.Price.ToString("F2")">
-                                                    @product.Price.ToString("F2")
-                                                </span>
-                                            </h5>
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
-                                            <button type="submit" class="btn btn-primary">Toevoegen</button>
-                                        </div>
-                                    </form>
+                <!-- Modal -->
+                <div class="modal fade" id="productModal-@product.Identifier" tabindex="-1" role="dialog" aria-labelledby="productModalLabel-@product.Identifier" data-product-id="@product.Identifier" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <form method="post" asp-action="AddProductToBasket">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="productModalLabel-@product.Identifier">@product.Name</h5>
                                 </div>
-                            </div>
+                                <div class="modal-body">
+                                    <input type="hidden" id="productId" name="ProductToAdd.Product.Identifier" value="@product.Identifier"/>
+                                    <input type="hidden" id="basketId" name="Basket.Identifier" value="@Model.Basket.Identifier"/>
+
+                                    <h6>Select Addons:</h6>
+                                    @foreach (var addon in product.AvailableAddons)
+                                    {
+                                        <div>
+                                            <input type="checkbox"
+                                                   name="SelectedAddons"
+                                                   value="@addon.Identifier"
+                                                   id="addon-@addon.Identifier"
+                                                   data-addon-price="@addon.Price"
+                                                   class="addon-checkbox"/>
+                                            <label for="addon-@addon.Identifier">@addon.Name (€@addon.Price)</label>
+                                        </div>
+                                    }
+                                    <label for="ProductCount">Aantal:</label>
+                                    <input type="number"
+                                           id="ProductCount"
+                                           name="ProductToAdd.Count"
+                                           class="form-control"
+                                           value="1" min="1"/>
+                                </div>
+                                <div class="modal-footer">
+                                    <h5>
+                                        €
+                                        <span id="productPrice-@product.Identifier"
+                                              data-base-price="@product.Price.ToString("F2")">
+                                            @product.Price.ToString("F2")
+                                        </span>
+                                    </h5>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                                    <button type="submit" class="btn btn-primary">Toevoegen</button>
+                                </div>
+                            </form>
                         </div>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
     <!-- Section for basket -->
     <div>
         @if (User.Identity.IsAuthenticated)
         {
             <div>
-                <label>Winkelmand</label>
+                <h5>
+                    Winkelmand
+                </h5>
             </div>
             <div class="btn-group" role="group" aria-label="Order Type Selector">
                 <form method="post" asp-action="SubmitOrder">
@@ -152,7 +151,7 @@
                         }
                     </div>
 
-                    <button type="submit" class="btn btn-success">Bestellen</button>
+                    <button type="submit" class="btn btn-primary top-spacing">Bestellen</button>
                 </form>
             </div>
         }
