@@ -8,10 +8,9 @@ title Class-diagram SnackTime
 
 class User {
     +uint Identifier
-    +string UserName
+    +string Name
     +string PasswordHash
     +string Email
-    +string PhoneNumber
     +Role Role
     +ICollection<Order> Orders
     +Basket Basket
@@ -20,6 +19,7 @@ class User {
 
 class Role {
     +string Name
+    +ICollection<Users> UsersWithRole
 }
 
 class Product {
@@ -27,7 +27,6 @@ class Product {
     +string Name
     +decimal Price
     +string ImagePath
-    +Discount? Discount
     +ICollection<Addon> AvailableAddons
     +ICollection<Discount> Discounts
     +ProductCategory ProductCategory
@@ -46,14 +45,22 @@ class Basket {
     +uint Identifier
     +User Owner
     +ICollection<ProductCount> Products
+    +enum OrderType
     
     +GetTotalPrice()
 }
 
 class Order {
+    +uint Identifier
+    +User Owner
+    +ICollection<ProductCount> Products
     +enum Status
     +enum OrderType
     +DateTime OrderTime
+    +uint TableNumber
+    +uint OwnerIdentifier
+    
+    +GetTotalPrice()
 }
 
 class Discount {
@@ -71,6 +78,7 @@ class Addon {
     +decimal Price
     +ICollection<Product> ApplicableProducts
     +ICollection<Addon> UnavailableWith
+    +ICollection<ProductCount> UsedInProductCounts
 }
 
 class ProductCategory {
@@ -88,8 +96,6 @@ Addon "0:n" -- "0:n" Product
 Addon "0:n" -- "0:n" ProductCount
 Role "1" -- "0:n" User
 Product "0:n" -- "1" ProductCategory
-
-Order --> Basket
 
 
 
