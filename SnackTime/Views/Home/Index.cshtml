@@ -3,18 +3,16 @@
 
 @{
     ViewData["Title"] = "Home Page";
-}
+    }
 
 <div class="grid-wrapper">
     <!-- Section for categories -->
     <div>
-        <h5>
-            Categorie
-        </h5>
+        <h5>Categorie</h5>
         @foreach (var item in Model.Categories)
         {
             <div>
-                @if (Model.SelectedCategory.Identifier == item.Identifier)
+                @if (Model.SelectedCategory?.Identifier == item.Identifier)
                 {
                     <a class="btn btn-primary bottom-spacing" asp-action="Index" asp-route-id="@item.Identifier">@item.Name</a>
                 }
@@ -27,9 +25,7 @@
     </div>
     <!-- Section for Products -->
     <div>
-        <h5>
-            Producten
-        </h5>
+        <h5>Producten</h5>
         @foreach (var product in Model.SelectedCategory.ProductsInCategory)
         {
             <div>
@@ -48,7 +44,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <input type="hidden" id="productId" name="ProductToAdd.Product.Identifier" value="@product.Identifier"/>
-                                    <input type="hidden" id="basketId" name="Basket.Identifier" value="@Model.Basket.Identifier"/>
+                                    <input type="hidden" id="basketId" name="Basket.Identifier" value="@Model.Basket?.Identifier"/>
 
                                     <h6>Select Addons:</h6>
                                     @foreach (var addon in product.AvailableAddons)
@@ -93,9 +89,7 @@
         @if (User.Identity.IsAuthenticated)
         {
             <div>
-                <h5>
-                    Winkelmand
-                </h5>
+                <h5>Winkelmand</h5>
             </div>
             <div class="btn-group" role="group" aria-label="Order Type Selector">
                 <form method="post" asp-action="SubmitOrder">
@@ -116,20 +110,14 @@
                         <input type="number" id="TableNumber" name="TableNumber" class="form-control" value="@Model.TableNumber" />
                     </div>
                     <div>
-                        <input type="hidden" id="basketId" name="Basket.Identifier" value="@Model.Basket.Identifier" />
-                        @if (Model.Basket.Products != null)
+                        <input type="hidden" id="basketId" name="Basket.Identifier" value="@Model.Basket?.Identifier" />
+                        @if (Model.Basket?.Products != null)
                         {
                             @foreach (var item in Model.Basket.Products)
                             {
                                 <div>
-                                    <div>
-                                        @item.Product.Name
-                                    </div>
-                                    <div>
-                                        @item.Count
-
-                                        @item.GetTotalPrice()
-                                    </div>
+                                    <div>@item.Product.Name</div>
+                                    <div>@item.Count @item.GetTotalPrice()</div>
                                 </div>
                             }
                         }
@@ -141,9 +129,7 @@
         }
         else
         {
-            <div>
-                Log aub in of registreer een account om een bestelling te plaatsen.
-            </div>
+            <div>Log aub in of registreer een account om een bestelling te plaatsen.</div>
             <div>
                 <button type="button" onclick="location.href='@Url.Action("Login", "Account")'">Inloggen</button>
                 <button type="button" onclick="location.href='@Url.Action("Register", "Account")'">Registreren</button>
