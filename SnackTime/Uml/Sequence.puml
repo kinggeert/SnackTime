@@ -1,0 +1,12 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+User -> HomeController : AddProductToBasket()
+HomeController -> ProductCount : ProductCount()
+ProductCount -> Addon : AddonsUsed()
+
+ProductCount <- Addon : Return
+HomeController <- ProductCount : Return
+User <- HomeController
+@enduml
