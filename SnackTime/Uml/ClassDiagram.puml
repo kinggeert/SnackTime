@@ -96,6 +96,7 @@ Addon "0:n" -- "0:n" Product
 Addon "0:n" -- "0:n" ProductCount
 Role "1" -- "0:n" User
 Product "0:n" -- "1" ProductCategory
+Basket "0:1" -- "0:n" ProductCount
 
 
 
