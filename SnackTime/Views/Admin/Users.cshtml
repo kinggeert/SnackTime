@@ -1,0 +1,19 @@
+﻿@model SnackTime.ViewModels.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Users aanpassen";
+}
+
+<div>
+    <form asp-action="EditUser">
+        <div>
+            <label asp-for="Email" class="control-label">E-Mail</label>
+            <input asp-for="Email" class="form-control" />
+        </div>
+        <div>
+            <label asp-for="SelectedRoleName" class="control-label">Selecteer gewenste rol</label>
+            <input asp-for="SelectedRoleName" class="form-control"/>
+        </div>
+        <button type="submit">Verander rol</button>
+    </form>
+</div>
