@@ -1,4 +1,4 @@
-﻿@model SnackTime.Models.Product
+﻿@model SnackTime.ViewModels.CreateProductViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,24 +12,29 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Identifier" />
+            <input type="hidden" name="Product.Identifier" value="@Model.Product.Identifier"/>
+            <input type="hidden" name="Product.ImagePath" value="none"/>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Product.Name" class="control-label"></label>
+                <input asp-for="Product.Name" class="form-control" />
+                <span asp-validation-for="Product.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
+                <label asp-for="Product.Price" class="control-label"></label>
+                <input asp-for="Product.Price" class="form-control" />
+                <span asp-validation-for="Product.Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImagePath" class="control-label"></label>
-                <input asp-for="ImagePath" class="form-control" />
-                <span asp-validation-for="ImagePath" class="text-danger"></span>
+                <label asp-for="Product.ProductCategory.Identifier" class="control-label">Category</label>
+                <select asp-for="Product.ProductCategory.Identifier"
+                        asp-items="@(new SelectList(Model.AvailableCategories, "Identifier", "Name"))"
+                        class="form-control">
+                    <option value="">Select a category</option>
+                </select>
+                <span asp-validation-for="Product.ProductCategory.Identifier" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Edit" class="btn btn-primary" />
             </div>
         </form>
     </div>

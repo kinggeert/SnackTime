@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SnackTime.Data;
 using SnackTime.Models;
+using SnackTime.ViewModels;
 
 namespace SnackTime.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProductsController : Controller
     {
         private readonly DatabaseContext _context;
@@ -22,7 +25,7 @@ namespace SnackTime.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            return View(await _context.Products.Include(e => e.ProductCategory).ToListAsync());
         }
 
         // GET: Products/Details/5
@@ -46,7 +49,12 @@ namespace SnackTime.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            return View();
+            var categories = _context.ProductCategories.ToList();
+            var viewModel = new CreateProductViewModel
+            {
+                AvailableCategories = categories
+            };
+            return View(viewModel);
         }
 
         // POST: Products/Create
@@ -54,15 +62,19 @@ namespace SnackTime.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Identifier,Name,Price,ImagePath")] Product product)
+        public async Task<IActionResult> Create(CreateProductViewModel model)
         {
-            if (ModelState.IsValid)
+            if (model.Product != null)
             {
-                _context.Add(product);
+                var category = _context.ProductCategories.Find(model.Product.ProductCategory.Identifier); 
+                model.Product.ProductCategory = category;
+                _context.Add(model.Product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            var categories = _context.ProductCategories.ToList();
+            model.AvailableCategories = categories;
+            return View(model);
         }
 
         // GET: Products/Edit/5
@@ -78,7 +90,14 @@ namespace SnackTime.Controllers
             {
                 return NotFound();
             }
-            return View(product);
+            
+            var categories = _context.ProductCategories.ToList();
+            var viewModel = new CreateProductViewModel
+            {
+                AvailableCategories = categories,
+                Product = product
+            };
+            return View(viewModel);
         }
 
         // POST: Products/Edit/5
@@ -86,23 +105,29 @@ namespace SnackTime.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(uint id, [Bind("Identifier,Name,Price,ImagePath")] Product product)
+        public async Task<IActionResult> Edit(uint id, CreateProductViewModel model)
         {
-            if (id != product.Identifier)
+            if (model.Product == null || id != model.Product.Identifier)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (model.Product != null)
             {
                 try
                 {
+                    var category = _context.ProductCategories.Find(model.Product.ProductCategory.Identifier); 
+                    model.Product.ProductCategory = category;
+                    var product = _context.Products.Find(id);
+                    product.ProductCategory = category;
+                    product.Name = model.Product.Name;
+                    product.Price = model.Product.Price;
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.Identifier))
+                    if (!ProductExists(model.Product.Identifier))
                     {
                         return NotFound();
                     }
@@ -113,7 +138,9 @@ namespace SnackTime.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            var categories = _context.ProductCategories.ToList();
+            model.AvailableCategories = categories;
+            return View(model);
         }
 
         // GET: Products/Delete/5
