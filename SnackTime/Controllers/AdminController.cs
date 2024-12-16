@@ -7,11 +7,16 @@ using SnackTime.ViewModels;
 
 namespace SnackTime.Controllers;
 
+[Authorize(Roles = "admin")]
 public class AdminController(DatabaseContext context) : Controller
 {
     private readonly DatabaseContext _context = context;
 
-    [Authorize(Roles = "Admin")]
+    public IActionResult Index()
+    {
+        return View();
+    }
+    
     public IActionResult Users()
     {
         var viewModel = new EditUserViewModel
@@ -22,7 +27,6 @@ public class AdminController(DatabaseContext context) : Controller
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> EditUser(EditUserViewModel model)
     {
         if (model.Email != null && model.SelectedRoleName != null)

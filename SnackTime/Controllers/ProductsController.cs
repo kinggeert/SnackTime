@@ -12,7 +12,7 @@ using SnackTime.ViewModels;
 
 namespace SnackTime.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "admin")]
     public class ProductsController : Controller
     {
         private readonly DatabaseContext _context;
